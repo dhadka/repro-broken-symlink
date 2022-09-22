@@ -1,0 +1,39 @@
+name: Repro
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  working-pwsh:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run pwsh shell
+        shell: pwsh
+        run: echo Hello
+        
+      - name: Run pwsh command
+        run: pwsh -Command "echo Hello"
+
+  broken-pwsh:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup broken symlink
+        run: sudo ln -s /usr/bin/missing_pwsh /usr/local/bin/pwsh
+
+      - name: Run pwsh shell
+        shell: pwsh
+        run: echo Hello
+        
+      - name: Run pwsh command
+        run: pwsh -Command "echo Hello"
+
